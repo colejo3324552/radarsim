@@ -1,9 +1,13 @@
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
+
+    background: #0a0a0a;
+
     font-family: Arial, sans-serif;
 }
 
@@ -15,22 +19,25 @@ html, body {
 #loading-screen {
     position: fixed;
     inset: 0;
-    background: #0a0a0a;
-    color: white;
+
+    background: #050505;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    z-index: 9999;
+    color: white;
+
+    z-index: 99999;
 
     transition: opacity 1s ease;
 }
 
 .spinner {
-    width: 70px;
-    height: 70px;
+
+    width: 80px;
+    height: 80px;
 
     border: 6px solid rgba(255,255,255,.15);
     border-top: 6px solid white;
@@ -42,16 +49,71 @@ html, body {
     margin-bottom: 20px;
 }
 
+@keyframes spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
 h1 {
+
     margin: 0;
-    font-size: 42px;
+
+    font-size: 48px;
+
+    letter-spacing: 2px;
 }
 
 p {
-    opacity: .7;
+
+    color: #999;
+
+    margin-top: 10px;
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+.city-label {
+
+    background: transparent;
+
+    border: none;
+
+    color: white;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    text-shadow:
+        0 0 4px black,
+        0 0 8px black;
+
+    white-space: nowrap;
+}
+
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+
+    background: transparent !important;
+
+    border: none !important;
+}
+
+.leaflet-control-zoom {
+
+    border: none !important;
+}
+
+.leaflet-control-zoom a {
+
+    background: #181818 !important;
+
+    color: white !important;
+
+    border: 1px solid #333 !important;
 }
