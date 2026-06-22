@@ -5,36 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RadarSim</title>
 
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <h1>RadarSim</h1>
-        <p>Loading radar data...</p>
-    </div>
+<div id="loading-screen">
+    <div class="spinner"></div>
+    <h1>RadarSim</h1>
+    <p>Loading map data...</p>
+</div>
 
-    <div id="map"></div>
+<div id="map"></div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        const map = L.map('map').setView([39.8, -89.6], 7);
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+<script>
 
-        setTimeout(() => {
-            document.getElementById("loading-screen").style.opacity = "0";
+const map = L.map('map', {
+    zoomControl: true,
+    minZoom: 4,
+    maxZoom: 10
+}).setView([39.5, -98.35], 5);
 
-            setTimeout(() => {
-                document.getElementById("loading-screen").style.display = "none";
-            }, 1000);
-        }, 3000);
-    </script>
+const usaBounds = [
+    [24.5, -125],
+    [49.5, -66]
+];
+
+map.setMaxBounds(usaBounds);
+
+L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    {
+        attribution: '&copy; OpenStreetMap & CARTO'
+    }
+).addTo(map);
+
+const cities = [
+    ["New York", 40.7128, -74.0060],
+    ["Chicago", 41.8781, -87.6298],
+    ["Los Angeles", 34.0522, -118.2437],
+    ["Houston", 29.7604, -95.3698],
+    ["Phoenix", 33.4484, -112.0740],
+    ["Dallas", 32.7767, -96.7970],
+    ["Atlanta", 33.7490, -84.3880],
+    ["Denver", 39.7392, -104.9903],
+    ["St. Louis", 38.6270, -90.1994],
+    ["Kansas City", 39.0997, -94.5786],
+    ["Indianapolis", 39.7684, -86.1581],
+    ["Nashville", 36.1627, -86.7816],
+    ["Minneapolis", 44.9778, -93.2650],
+    ["Detroit", 42.3314, -83.0458],
+    ["Seattle", 47.6062, -122.3321],
+    ["Miami", 25.7617, -80.1918]
+];
+
+cities.forEach(city => {
+
+    const label = L.divIcon({
+        className: 'city-label',
+        html: city[0]
+    });
+
+    L.marker([city[1], city[2]], {
+        icon: label
+    }).addTo(map);
+
+});
+
+setTimeout(() => {
+
+    document.getElementById("loading-screen").style.opacity = "0";
+
+    setTimeout(() => {
+
+        document.getElementById("loading-screen").style.display = "none";
+
+    }, 1000);
+
+}, 2500);
+
+</script>
 
 </body>
 </html>
