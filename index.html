@@ -1,9 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RadarSim</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>RadarSim</h1>
+
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <h1>RadarSim</h1>
+        <p>Loading radar data...</p>
+    </div>
+
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([39.8, -89.6], 7);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        setTimeout(() => {
+            document.getElementById("loading-screen").style.opacity = "0";
+
+            setTimeout(() => {
+                document.getElementById("loading-screen").style.display = "none";
+            }, 1000);
+        }, 3000);
+    </script>
+
 </body>
 </html>
