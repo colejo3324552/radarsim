@@ -1,14 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RadarSim</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RadarSim</title>
 
-    <link rel="stylesheet"
-          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
-    <link rel="stylesheet" href="style.css">
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #111;
+    font-family: Arial, sans-serif;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#loading-screen {
+    position: fixed;
+    inset: 0;
+    background: #050505;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: white;
+    transition: opacity 1s ease;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border: 6px solid rgba(255,255,255,.15);
+    border-top: 6px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.city-label {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow:
+        0 0 4px black,
+        0 0 8px black;
+    white-space: nowrap;
+}
+
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+    background: transparent !important;
+    border: none !important;
+}
+
+.leaflet-control-attribution {
+    display: none;
+}
+</style>
 </head>
 <body>
 
@@ -24,66 +88,80 @@
 
 <script>
 
-const map = L.map('map', {
-    zoomControl: true,
-    minZoom: 4,
-    maxZoom: 10
-}).setView([39.5, -98.35], 5);
-
 const usaBounds = [
-    [24.5, -125],
-    [49.5, -66]
+    [24.396308, -125.0],
+    [49.384358, -66.93457]
 ];
 
-map.setMaxBounds(usaBounds);
+const map = L.map("map", {
+    minZoom: 4,
+    maxZoom: 16,
+    zoomControl: true,
+    worldCopyJump: false,
+    maxBounds: usaBounds,
+    maxBoundsViscosity: 1.0
+}).setView([39.5, -98.35], 5);
 
 L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    {
-        attribution: '&copy; OpenStreetMap & CARTO'
-    }
+'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+{
+    attribution: 'Esri'
+}
 ).addTo(map);
 
+// Major Cities Only
+
 const cities = [
-    ["New York", 40.7128, -74.0060],
-    ["Chicago", 41.8781, -87.6298],
-    ["Los Angeles", 34.0522, -118.2437],
-    ["Houston", 29.7604, -95.3698],
-    ["Phoenix", 33.4484, -112.0740],
-    ["Dallas", 32.7767, -96.7970],
-    ["Atlanta", 33.7490, -84.3880],
-    ["Denver", 39.7392, -104.9903],
-    ["St. Louis", 38.6270, -90.1994],
-    ["Kansas City", 39.0997, -94.5786],
-    ["Indianapolis", 39.7684, -86.1581],
-    ["Nashville", 36.1627, -86.7816],
-    ["Minneapolis", 44.9778, -93.2650],
-    ["Detroit", 42.3314, -83.0458],
-    ["Seattle", 47.6062, -122.3321],
-    ["Miami", 25.7617, -80.1918]
+    ["New York",40.7128,-74.0060],
+    ["Chicago",41.8781,-87.6298],
+    ["Los Angeles",34.0522,-118.2437],
+    ["Dallas",32.7767,-96.7970],
+    ["Atlanta",33.7490,-84.3880],
+    ["Denver",39.7392,-104.9903],
+    ["Kansas City",39.0997,-94.5786],
+    ["St. Louis",38.6270,-90.1994],
+    ["Indianapolis",39.7684,-86.1581],
+    ["Nashville",36.1627,-86.7816]
 ];
 
 cities.forEach(city => {
 
-    const label = L.divIcon({
-        className: 'city-label',
-        html: city[0]
-    });
-
     L.marker([city[1], city[2]], {
-        icon: label
+        icon: L.divIcon({
+            className: "city-label",
+            html: city[0]
+        })
     }).addTo(map);
 
 });
+
+// Mississippi River
+
+L.polyline([
+    [47.24,-95.20],
+    [45.0,-93.0],
+    [43.0,-91.0],
+    [41.5,-91.0],
+    [39.0,-90.0],
+    [37.0,-89.5],
+    [35.0,-90.0],
+    [33.0,-91.0],
+    [31.0,-91.5],
+    [29.0,-89.5]
+],{
+    color:"#4aa3ff",
+    weight:3,
+    opacity:0.9
+}).addTo(map);
+
+// Loading Screen
 
 setTimeout(() => {
 
     document.getElementById("loading-screen").style.opacity = "0";
 
     setTimeout(() => {
-
         document.getElementById("loading-screen").style.display = "none";
-
     }, 1000);
 
 }, 2500);
