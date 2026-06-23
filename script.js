@@ -1,10 +1,8 @@
-console.log("RadarSim loaded");
+const map = L.map("map").setView([39.5, -98.35], 5);
 
-setTimeout(() => {
-    document.getElementById("loading-screen").style.opacity = "0";
-
-    setTimeout(() => {
-        document.getElementById("loading-screen").style.display = "none";
-    }, 1000);
-
-}, 2500);
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        attribution: "&copy; OpenStreetMap contributors"
+    }
+).addTo(map);
