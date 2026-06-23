@@ -12,83 +12,74 @@
 </head>
 <body>
 
-<div id="loading-screen">
-    <div class="spinner"></div>
-    <h1>RadarSim</h1>
-    <p>Loading map data...</p>
-</div>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <h1>RadarSim</h1>
+        <p>Loading map data...</p>
+    </div>
 
-<div id="map"></div>
+    <!-- Sidebar Toggle -->
+    <button id="sidebarToggle">☰</button>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Sidebar -->
+    <div id="sidebar">
 
-<script>
+        <h2>RadarSim</h2>
 
-const map = L.map('map', {
-    zoomControl: true,
-    minZoom: 4,
-    maxZoom: 10
-}).setView([39.5, -98.35], 5);
+        <div class="section">
+            <h3>Selected Radar</h3>
+            <p id="selectedRadar">KPAH - Paducah</p>
+        </div>
 
-const usaBounds = [
-    [24.5, -125],
-    [49.5, -66]
-];
+        <div class="section">
+            <h3>Active Warnings</h3>
+            <p id="warningCount">0</p>
+        </div>
 
-map.setMaxBounds(usaBounds);
+        <div class="section">
+            <h3>Reports</h3>
+            <p id="reportCount">0</p>
+        </div>
 
-L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    {
-        attribution: '&copy; OpenStreetMap & CARTO'
-    }
-).addTo(map);
+        <button id="settingsBtn">
+            Settings
+        </button>
 
-const cities = [
-    ["New York", 40.7128, -74.0060],
-    ["Chicago", 41.8781, -87.6298],
-    ["Los Angeles", 34.0522, -118.2437],
-    ["Houston", 29.7604, -95.3698],
-    ["Phoenix", 33.4484, -112.0740],
-    ["Dallas", 32.7767, -96.7970],
-    ["Atlanta", 33.7490, -84.3880],
-    ["Denver", 39.7392, -104.9903],
-    ["St. Louis", 38.6270, -90.1994],
-    ["Kansas City", 39.0997, -94.5786],
-    ["Indianapolis", 39.7684, -86.1581],
-    ["Nashville", 36.1627, -86.7816],
-    ["Minneapolis", 44.9778, -93.2650],
-    ["Detroit", 42.3314, -83.0458],
-    ["Seattle", 47.6062, -122.3321],
-    ["Miami", 25.7617, -80.1918]
-];
+    </div>
 
-cities.forEach(city => {
+    <!-- Settings Panel -->
+    <div id="settingsPanel">
 
-    const label = L.divIcon({
-        className: 'city-label',
-        html: city[0]
-    });
+        <h3>Settings</h3>
 
-    L.marker([city[1], city[2]], {
-        icon: label
-    }).addTo(map);
+        <label>
+            <input type="checkbox" id="showCities" checked>
+            Show Cities
+        </label>
 
-});
+        <label>
+            <input type="checkbox" id="showRivers" checked>
+            Show Rivers
+        </label>
 
-setTimeout(() => {
+        <label>
+            <input type="checkbox" id="showStates" checked>
+            Show State Borders
+        </label>
 
-    document.getElementById("loading-screen").style.opacity = "0";
+        <label>
+            <input type="checkbox" id="showHighways" checked>
+            Show Highway Labels
+        </label>
 
-    setTimeout(() => {
+    </div>
 
-        document.getElementById("loading-screen").style.display = "none";
+    <!-- Map -->
+    <div id="map"></div>
 
-    }, 1000);
-
-}, 2500);
-
-</script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
 
 </body>
 </html>
