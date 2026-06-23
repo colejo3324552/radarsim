@@ -33,16 +33,43 @@ L.tileLayer(
 const cityLayer = L.layerGroup();
 
 const cities = [
-    ["New York",40.7128,-74.0060],
-    ["Chicago",41.8781,-87.6298],
-    ["Los Angeles",34.0522,-118.2437],
-    ["Dallas",32.7767,-96.7970],
-    ["Atlanta",33.7490,-84.3880],
-    ["Denver",39.7392,-104.9903],
-    ["Kansas City",39.0997,-94.5786],
-    ["St. Louis",38.6270,-90.1994],
-    ["Indianapolis",39.7684,-86.1581],
-    ["Nashville",36.1627,-86.7816]
+["New York",40.7128,-74.0060],
+["Los Angeles",34.0522,-118.2437],
+["Chicago",41.8781,-87.6298],
+["Houston",29.7604,-95.3698],
+["Phoenix",33.4484,-112.0740],
+["Philadelphia",39.9526,-75.1652],
+["San Antonio",29.4241,-98.4936],
+["San Diego",32.7157,-117.1611],
+["Dallas",32.7767,-96.7970],
+["Austin",30.2672,-97.7431],
+["Jacksonville",30.3322,-81.6557],
+["Columbus",39.9612,-82.9988],
+["Charlotte",35.2271,-80.8431],
+["Indianapolis",39.7684,-86.1581],
+["Seattle",47.6062,-122.3321],
+["Denver",39.7392,-104.9903],
+["Washington",38.9072,-77.0369],
+["Boston",42.3601,-71.0589],
+["Nashville",36.1627,-86.7816],
+["Atlanta",33.7490,-84.3880],
+["Detroit",42.3314,-83.0458],
+["Kansas City",39.0997,-94.5786],
+["St. Louis",38.6270,-90.1994],
+["Minneapolis",44.9778,-93.2650],
+["Miami",25.7617,-80.1918],
+["Tampa",27.9506,-82.4572],
+["Orlando",28.5383,-81.3792],
+["Oklahoma City",35.4676,-97.5164],
+["Omaha",41.2565,-95.9345],
+["Memphis",35.1495,-90.0490],
+["New Orleans",29.9511,-90.0715],
+["Salt Lake City",40.7608,-111.8910],
+["Las Vegas",36.1699,-115.1398],
+["Portland",45.5152,-122.6784],
+["Cleveland",41.4993,-81.6944],
+["Cincinnati",39.1031,-84.5120],
+["Pittsburgh",40.4406,-79.9959]
 ];
 
 cities.forEach(city => {
@@ -62,31 +89,6 @@ cities.forEach(city => {
 cityLayer.addTo(map);
 
 // =========================
-// RIVER LAYER
-// =========================
-
-const riverLayer = L.layerGroup();
-
-L.polyline([
-    [47.24,-95.20],
-    [45.0,-93.0],
-    [43.0,-91.0],
-    [41.5,-91.0],
-    [39.0,-90.0],
-    [37.0,-89.5],
-    [35.0,-90.0],
-    [33.0,-91.0],
-    [31.0,-91.5],
-    [29.0,-89.5]
-], {
-    color: "#4aa3ff",
-    weight: 3,
-    opacity: 0.9
-}).addTo(riverLayer);
-
-riverLayer.addTo(map);
-
-// =========================
 // RADAR SITES
 // =========================
 
@@ -100,10 +102,65 @@ const radarSites = [
 
 radarSites.forEach(site => {
 
-    const marker = L.circleMarker(
-        [site[1], site[2]],
+    const lat = site[1];
+    const lon = site[2];
+
+    // Radar Range Ring
+
+    L.circle(
+        [lat, lon],
         {
-            radius: 7,
+            radius: 230000,
+            color: "#00ff66",
+            weight: 1,
+            opacity: 0.20,
+            fillOpacity: 0
+        }
+    ).addTo(map);
+
+    // Radar Sweep
+
+    const sweep = L.polyline(
+        [
+            [lat, lon],
+            [lat, lon]
+        ],
+        {
+            color: "#00ff66",
+            weight: 2,
+            opacity: 0.9
+        }
+    ).addTo(map);
+
+    let angle = Math.random() * 360;
+
+    setInterval(() => {
+
+        angle += 2;
+
+        const length = 2.2;
+
+        const endLat =
+            lat +
+            Math.cos(angle * Math.PI / 180) * length;
+
+        const endLon =
+            lon +
+            Math.sin(angle * Math.PI / 180) * length;
+
+        sweep.setLatLngs([
+            [lat, lon],
+            [endLat, endLon]
+        ]);
+
+    }, 25);
+
+    // Radar Site Marker
+
+    const marker = L.circleMarker(
+        [lat, lon],
+        {
+            radius: 5,
             color: "#00ff66",
             fillColor: "#00ff66",
             fillOpacity: 1,
@@ -111,17 +168,22 @@ radarSites.forEach(site => {
         }
     ).addTo(map);
 
-    marker.bindTooltip(site[0], {
-        permanent: true,
-        direction: "top"
-    });
+    marker.bindTooltip(
+        site[0],
+        {
+            permanent: true,
+            direction: "top"
+        }
+    );
 
     marker.on("click", () => {
 
-        document.getElementById("selectedRadar").textContent = site[0];
+        document.getElementById(
+            "selectedRadar"
+        ).textContent = site[0];
 
         map.flyTo(
-            [site[1], site[2]],
+            [lat, lon],
             8,
             {
                 duration: 1
@@ -136,54 +198,72 @@ radarSites.forEach(site => {
 // SIDEBAR
 // =========================
 
-const sidebar = document.getElementById("sidebar");
-const sidebarToggle = document.getElementById("sidebarToggle");
+const sidebar =
+    document.getElementById("sidebar");
 
-sidebarToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("collapsed");
-});
+const sidebarToggle =
+    document.getElementById("sidebarToggle");
+
+sidebarToggle.addEventListener(
+    "click",
+    () => {
+
+        sidebar.classList.toggle(
+            "collapsed"
+        );
+
+    }
+);
 
 // =========================
 // SETTINGS
 // =========================
 
-const settingsBtn = document.getElementById("settingsBtn");
-const settingsPanel = document.getElementById("settingsPanel");
+const settingsBtn =
+    document.getElementById("settingsBtn");
 
-settingsBtn.addEventListener("click", () => {
+const settingsPanel =
+    document.getElementById("settingsPanel");
 
-    settingsPanel.style.display =
-        settingsPanel.style.display === "block"
-        ? "none"
-        : "block";
+settingsBtn.addEventListener(
+    "click",
+    () => {
 
-});
+        settingsPanel.style.display =
+            settingsPanel.style.display === "block"
+            ? "none"
+            : "block";
 
-// Show Cities
-
-document.getElementById("showCities")
-.addEventListener("change", function() {
-
-    if (this.checked) {
-        map.addLayer(cityLayer);
-    } else {
-        map.removeLayer(cityLayer);
     }
+);
 
-});
+// =========================
+// CITY TOGGLE
+// =========================
 
-// Show Rivers
+const cityCheckbox =
+    document.getElementById("showCities");
 
-document.getElementById("showRivers")
-.addEventListener("change", function() {
+if(cityCheckbox){
 
-    if (this.checked) {
-        map.addLayer(riverLayer);
-    } else {
-        map.removeLayer(riverLayer);
-    }
+    cityCheckbox.addEventListener(
+        "change",
+        function(){
 
-});
+            if(this.checked){
+
+                map.addLayer(cityLayer);
+
+            } else {
+
+                map.removeLayer(cityLayer);
+
+            }
+
+        }
+    );
+
+}
 
 // =========================
 // LOADING SCREEN
@@ -191,11 +271,15 @@ document.getElementById("showRivers")
 
 setTimeout(() => {
 
-    document.getElementById("loading-screen").style.opacity = "0";
+    document
+        .getElementById("loading-screen")
+        .style.opacity = "0";
 
     setTimeout(() => {
 
-        document.getElementById("loading-screen").style.display = "none";
+        document
+            .getElementById("loading-screen")
+            .style.display = "none";
 
     }, 1000);
 
